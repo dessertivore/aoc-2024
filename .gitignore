@@ -1,0 +1,5 @@
+.python-version
+.mypy_cache
+aoc_2024.egg-info
+
+cookie.py

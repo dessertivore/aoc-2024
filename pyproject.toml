@@ -1,0 +1,9 @@
+[project]
+dependencies = [
+  "requests"
+]
+description = ""
+name = "aoc-2024"
+readme = "README.md"
+requires-python = ">=3.11"
+version = "0.0.1"
