@@ -1,5 +1,5 @@
 .python-version
 .mypy_cache
 aoc_2024.egg-info
-
+__pycache__
 cookie.py
