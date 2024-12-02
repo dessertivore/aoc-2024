@@ -23,7 +23,25 @@ def all_inc_or_dec(data: list, reverse: bool=False):
     sorted.sort(reverse=reverse)
     return sorted == data
 
-def check_safe(test:bool=False, try_remove_one:bool=False) -> dict[int, bool]:
+def check_report_safe(report: list)->bool:
+    # Check if all numbers are increasing or decreasing.
+    safe=any([all_inc_or_dec(report), all_inc_or_dec(report, reverse=True)])
+    if not safe:
+        return safe
+    
+    prev=None
+    for x in report:
+        # Check there is a difference of 1-3 between each number.
+        if not prev:
+            prev=x
+            continue
+        if abs(x - prev) not in range(1,4):
+            safe=False
+            break
+        prev=x
+    return safe  
+      
+def check_all_safe(test:bool=False, try_remove_one:bool=False) -> dict[int, bool]:
     """
     Check if a level is defined as safe.
     First, check if all numbers are increasing or decreasing.
@@ -34,6 +52,9 @@ def check_safe(test:bool=False, try_remove_one:bool=False) -> dict[int, bool]:
     -------
     test: bool
         If True, use test data.
+    try_remove_one: bool
+        If True, try to remove one number at a time to see if possible to make the 
+        level safe with the Problem Dampener.
 
     Returns:
     --------
@@ -44,40 +65,43 @@ def check_safe(test:bool=False, try_remove_one:bool=False) -> dict[int, bool]:
     data=parse_input(test)
     output:dict={}
     for enum, line in enumerate(data):
-        # Check if all numbers are increasing or decreasing.
-        output[enum]=any([all_inc_or_dec(line), all_inc_or_dec(line, reverse=True)])
-        if try_remove_one:
-            for x in range(len(line)-1):
+        if check_report_safe(line):
+            output[enum]=True
+        else:
+            output[enum]=False
+        
+        if not output[enum] and try_remove_one:
+            for x in range(len(line)):
                 copy_line=copy.deepcopy(line)
                 copy_line.pop(x)
-                if any([all_inc_or_dec(copy_line), all_inc_or_dec(copy_line, reverse=True)]):
+                if check_report_safe(copy_line):
                     output[enum]=True
                     break
-        prev=None
-        if try_remove_one:
-            # Allow tolerance of 1 bad level.
-            mistakes_so_far=0
-        for x in line:
-            # Check there is a difference of 1-3 between each number.
-            if not prev:
-                prev=x
-                continue
-            if abs(x - prev) not in range(1,4):
-                if try_remove_one:
-                    if mistakes_so_far==0:
-                        mistakes_so_far+=1
-                        continue
-                output[enum]=False
-                break
-            prev=x
     return output
 
 def count_safe(test:bool=False, try_remove_one:bool=False) -> int:
-    return sum(check_safe(test, try_remove_one).values())
+    """
+    Count how many total reports are safe.
 
-assert check_safe(test=True)=={0: True, 1: False, 2: False, 3: False, 4: False, 5: True}
+    Params:
+    -------
+    test: bool
+        If True, use test data.
+    try_remove_one: bool
+        If True, try to remove one number at a time to see if possible to make the 
+        level safe with the Problem Dampener.
+
+    Returns:
+    --------
+    int
+        The number of safe reports
+    """
+    return sum(check_all_safe(test, try_remove_one).values())
+
+assert check_all_safe(test=True)=={0: True, 1: False, 2: False, 3: False, 4: False, 5: True}
 assert count_safe(test=True)==2
-assert check_safe(test=True,try_remove_one=True)=={0: True, 1: False, 2: False, 3: True, 4: True, 5: True}
+
+assert check_all_safe(test=True,try_remove_one=True)=={0: True, 1: False, 2: False, 3: True, 4: True, 5: True}
 assert count_safe(test=True,try_remove_one=True)==4
 
 print(count_safe(try_remove_one=True))
