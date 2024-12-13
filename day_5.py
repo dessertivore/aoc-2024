@@ -1,5 +1,4 @@
 from collections import defaultdict
-import math
 from _common import get_input
 import re
 

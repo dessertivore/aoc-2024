@@ -1,6 +1,6 @@
 [project]
 dependencies = [
-  "requests"
+  "requests","shapely"
 ]
 description = ""
 name = "aoc-2024"
