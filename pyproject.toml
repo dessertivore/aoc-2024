@@ -1,6 +1,6 @@
 [project]
 dependencies = [
-  "requests","shapely"
+  "requests","shapely","matplotlib"
 ]
 description = ""
 name = "aoc-2024"
