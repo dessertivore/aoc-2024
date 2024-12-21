@@ -19,3 +19,5 @@ def get_input(day:int, test:bool=False):
     else:
         cookie_path=pathlib.Path(f"test_data/day_{day}.txt")
         return cookie_path.read_text()
+
+DIRECTIONS=[(1,0),(-1,0),(0,1),(0,-1)]
