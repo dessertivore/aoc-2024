@@ -1,3 +1,8 @@
+"""
+This was originally written on my phone and is therefore not as tidy as I would like.
+If I have time to refactor, I plan to make a File Class rather than using dicts within
+dicts within dicts!
+"""
 from _common import get_input
 from collections import defaultdict
 
