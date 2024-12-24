@@ -1,3 +1,4 @@
+from collections import defaultdict
 from _common import get_input
 
 
@@ -14,7 +15,23 @@ class Gate:
     def __repr__(self) -> str:
         return self.info
     
-def parse_input(test:bool=False):
+def parse_input(test:bool=False) -> tuple[dict,list[Gate]]:
+    """
+    Parse input for Day 24.
+
+    Params:
+    -------
+    test:
+        bool: Test flag to use test data.
+
+    Returns:
+    --------
+    wires_dict:
+        dict: Dictionary of wires and their values.
+
+    all_gates:
+        list[Gate]: List of all gates.
+    """
     data=get_input(24,test).split("\n\n")
     wires=data[0].splitlines()
     wires_dict: dict={}
@@ -29,8 +46,22 @@ def parse_input(test:bool=False):
     return wires_dict,all_gates
 
 def parse_gates(test:bool=False):
+    """
+    For each gate, calculate the output and update the wires dictionary.
+    If wire is not found, add the gate back to the end of the list and retry later.
+
+    Params:
+    -------
+    test:
+        bool: Test flag to use test data.
+
+    Returns:
+    --------
+    wires_from_binary:
+        dict: Dictionary of wires and their values
+    """
     wires, gates=parse_input(test)
-    z_wires:str=""
+    wires_by_letter:dict=defaultdict(lambda:"")
     while gates:
         gate=gates.pop(0)
         try:
@@ -40,9 +71,19 @@ def parse_gates(test:bool=False):
             gates.append(gate)
     sorted_wires = sorted(wires,reverse=True)
     for wire in sorted_wires:
-        if wire[0]=="z":
-            z_wires+=str(wires[wire])
-    return int(z_wires,2)
+        wires_by_letter[wire[0]]+=str(wires[wire])
+    wires_from_binary:dict={k:int(val,2) for k,val in wires_by_letter.items()}
+    return wires_from_binary
 
-assert parse_gates(test=True) == 2024
-print(parse_gates(test=False))
+assert parse_gates(test=True)["z"] == 2024
+# print(parse_gates(test=False)["z"]) 
+
+def part_2(test:bool=False):
+    """
+    Start on part 2 of the problem.
+    """
+    wires=parse_gates(test)
+    difference=wires["z"]-wires["x"]-wires["y"]
+    print(difference)
+
+part_2(test=True)
