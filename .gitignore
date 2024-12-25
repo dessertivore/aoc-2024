@@ -3,3 +3,6 @@
 aoc_2024.egg-info
 __pycache__
 cookie.py
+.aoc_tiles/*
+.aoc_tiles/session.cookie
+!.aoc_tiles/tiles/
