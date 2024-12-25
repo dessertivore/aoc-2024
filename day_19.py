@@ -19,16 +19,19 @@ def parse_towels_to_pattern(pattern:str,towel:str,towels:list,cache:dict,pattern
     cache[key] = sum(parse_towels_to_pattern(pattern, next_towel, towels, pattern_obtained_so_far=key, cache=cache) for next_towel in towels if len(pattern_obtained_so_far+next_towel)<=len(pattern))
     return cache[key]
 
-def parse_all_patterns(test:bool=False):
+def parse_all_patterns(test:bool=False,part_2:bool=False):
     towels,desired_designs=parse_input(test)
     counter=0
     for pattern in desired_designs:
         cache:dict={}
-        print(pattern)
-        if sum([parse_towels_to_pattern(pattern,towel,towels,cache=cache) for towel in towels]) >= 1:
-            counter+=1
+        if (curr_sum:=sum([parse_towels_to_pattern(pattern,towel,towels,cache=cache) for towel in towels])) >= 1:
+            if not part_2:
+                counter+=1
+            else:
+                counter+=curr_sum
     return counter
 
 
 assert parse_all_patterns(test=True) == 6
-print(parse_all_patterns())
+assert parse_all_patterns(test=True,part_2=True)==16
+print(parse_all_patterns(part_2=True))
