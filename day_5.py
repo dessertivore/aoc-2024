@@ -5,13 +5,36 @@ import re
 def parse_input(test: bool=False) -> tuple[list[tuple],list[list[int]]]:
     """
     Parse input for day 5.
+
+    Params:
+    -------
+    test: bool
+        Whether to use test input.
+
+    Returns:
+    --------
+    tuple
+        Tuple of page order constraints and page order in each update.
     """
     raw=get_input(5,test).split("\n\n")
-    page_order = [tuple(map(int, x.split("|"))) for x in re.findall(r"([0-9]{2}\|[0-9]{2})", raw[0])]    
+    page_order_constraints = [tuple(map(int, x.split("|"))) for x in re.findall(r"([0-9]{2}\|[0-9]{2})", raw[0])]    
     page_order_per_update = [[int(item) for item in sublist.split(",") if item] for sublist in raw[1].split("\n") if sublist]
-    return page_order,page_order_per_update
+    return page_order_constraints,page_order_per_update
 
 def get_middle_index(update_list: list) -> int:
+    """
+    Get the middle index of a list.
+
+    Params:
+    -------
+    update_list: list
+        List of pages in update.
+
+    Returns:
+    --------
+    int
+        Middle index.
+    """
     middle_num=len(update_list)/2
     if middle_num % 2 != 0:
         middle_num-=0.5
@@ -19,9 +42,23 @@ def get_middle_index(update_list: list) -> int:
 
 def find_updates_out_of_order(test: bool=False, part_2: bool=False) -> tuple[int,list]:
     """
-    Find the number of pages that are out of order.
+    Find the number of updates that are out of order.
 
-    If part_2 is True, return a generator that yields the page that is out of order.
+    If part_2 is True, build a list of unordered updates. An empty list will be returned
+    in its place if part_2 is False.
+
+    Params:
+    -------
+    test: bool
+        Whether to use test input.
+
+    part_2: bool
+        Whether to create list of unordered updates or return empty list in its place.
+
+    Returns:
+    --------
+    tuple[int,list]
+        Tuple of number of safe updates and list of unordered updates.
     """
     page_order,page_order_per_update=parse_input(test)
     page_order_before_first:dict=defaultdict(lambda:[])
@@ -71,6 +108,22 @@ def find_updates_out_of_order(test: bool=False, part_2: bool=False) -> tuple[int
             
 
 def apply_constraints(wrongly_ordered: list, constraints: dict) -> list:
+    """
+    Bubble sort, using dict of constraints to dictate orter.
+
+    Params:
+    -------
+    wrongly_ordered: list
+        List of wrongly ordered updates.
+
+    constraints: dict
+        Dict of constraints. In format {page: [pages that must come after page]}
+
+    Returns:
+    --------
+    list
+        List of updates with pages in correct order.
+    """
     changed = True
     while changed:
         changed = False
@@ -85,6 +138,16 @@ def apply_constraints(wrongly_ordered: list, constraints: dict) -> list:
 def fix_page_order(test: bool=False) -> int:
     """
     Get wrongly ordered updates, fix the page order and sum middle numbers.
+
+    Params:
+    -------
+    test: bool
+        Whether to use test input.
+
+    Returns:
+    --------
+    int
+        Sum of middle numbers.
     """
     page_order,page_order_per_update=parse_input(test)
     page_order_before_first:dict=defaultdict(lambda:[])
